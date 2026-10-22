@@ -31,8 +31,6 @@ const businessConfig = {
   whatsapp: "+918088561527",                           // CHECK: card shows no WhatsApp number, phone assumed
   whatsappMessage: "Hi Smoke World, I tapped your card and have a question.",
   email: "Smokeworldvijayanagar@gmail.com",
-  instagram: "https://instagram.com/smokeworld_vijayanagar_",
-  instagram2: { label: "Fuego Smoke", url: "" },      // EDIT: paste the Fuego Smoke Instagram link here
   address: "No. 1/1, 1st Cross, 1st Main, near Bharathi Hospital, Prashanthnagar, Nagarbhavi Main Road, Bangalore 560079",
 
   googleReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJ15h73ac9rjsRspgc69taoA8",
@@ -44,12 +42,11 @@ const businessConfig = {
     feedbackTopics: ["Products / Stock", "Service", "Staff", "Pricing", "Delivery", "Waiting time", "Cleanliness", "Other"]
   },
 
-  mapsUrl: "",
+  mapsUrl: "https://maps.app.goo.gl/xJcsw7gjcLipiXcu7?g_st=aw",
 
-  // Find us sheet: the main shop first, then other branches.
+  // Find us sheet: the shop location.
   locations: [
-    { tag: "This shop", name: "Smoke World · Vijayanagar", address: "No. 1/1, 1st Cross, 1st Main, near Bharathi Hospital, Prashanthnagar, Nagarbhavi Main Road, Bangalore 560079", url: "", dirUrl: "" },
-    { tag: "Our other branch", name: "Fuego Smoke", address: "Open in Google Maps", url: "https://share.google/U4k9Uagk1uoEudBzdfeugo", dirUrl: "https://share.google/U4k9Uagk1uoEudBzdfeugo" }
+    { tag: "Our shop", name: "Smoke World · Vijayanagar", address: "No. 1/1, 1st Cross, 1st Main, near Bharathi Hospital, Prashanthnagar, Nagarbhavi Main Road, Bangalore 560079", url: "https://maps.app.goo.gl/xJcsw7gjcLipiXcu7?g_st=aw", dirUrl: "https://maps.app.goo.gl/xJcsw7gjcLipiXcu7?g_st=aw" }
   ],
 
   // Wi-Fi is left blank on purpose. Fill ssid and password and the sheet, copy buttons and QR code switch on.
@@ -69,7 +66,7 @@ const businessConfig = {
 
   features: {
     rating: true, wifi: true, findUs: true, directions: true, call: true, whatsapp: true, email: true,
-    instagram: true, services: true, saveContact: true, feedback: true, share: true
+    services: true, saveContact: true, feedback: true, share: true
   }
 };
 </script>
@@ -598,7 +595,7 @@ textarea.rv-text { outline: none; overflow: hidden; }
 
   /* ── Derived links ── */
   const mapsPlace = C.mapsUrl || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(C.address);
-  const mapsDir = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(C.address);
+  const mapsDir = C.mapsUrl || "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(C.address);
   const waLink = (text) => "https://wa.me/" + digits(C.whatsapp) + "?text=" + encodeURIComponent(text);
 
   /* ── Page render ── */
@@ -621,12 +618,10 @@ textarea.rv-text { outline: none; overflow: hidden; }
   const link = (ic, title, sub, href) => '<a class="row" href="' + esc(href) + '"' + (/^https?:/.test(href) ? ' target="_blank" rel="noopener"' : "") + '><span class="ico">' + icon(ic) + '</span><span class="txt"><b>' + esc(title) + "</b><small>" + esc(sub) + "</small></span>" + icon("go").replace('class="i"', 'class="i go"') + "</a>";
   const rowBtn = (ic, title, sub, act) => '<button class="row" type="button" data-act="' + act + '"><span class="ico">' + icon(ic) + '</span><span class="txt"><b>' + esc(title) + "</b><small>" + esc(sub) + "</small></span>" + icon("go").replace('class="i"', 'class="i go"') + "</button>";
   $("links").innerHTML = [
-    F.findUs && rowBtn("pin", "Find us", (C.locations || []).length > 1 ? "Smoke World and Fuego Smoke" : C.address, "findus"),
+    F.findUs && rowBtn("pin", "Find us", C.address, "findus"),
     F.directions && link("route", "Get directions", "Open the route in Google Maps", mapsDir),
     F.call && C.phone && link("phone", "Call us", C.phone, "tel:" + C.phone.replace(/[^\d+]/g, "")),
     F.whatsapp && C.whatsapp && link("chat", "WhatsApp us", "Message us directly", waLink(C.whatsappMessage || "Hi")),
-    F.instagram && C.instagram && link("insta", "Instagram", "@" + prettyUrl(C.instagram).split("/").pop(), C.instagram),
-    F.instagram && C.instagram2 && (C.instagram2.url ? link("insta", "Instagram · " + C.instagram2.label, "@" + prettyUrl(C.instagram2.url).split("/").pop(), C.instagram2.url) : '<div class="row off" aria-disabled="true"><span class="ico">' + icon("insta") + '</span><span class="txt"><b>Instagram · ' + esc(C.instagram2.label) + "</b><small>Handle coming soon</small></span></div>"),
     F.email && C.email && link("mail", "Email us", C.email, "mailto:" + C.email),
         F.services && rowBtn("list", "Our services", C.menuTitle || "See what we offer", "services")
   ].filter(Boolean).join("");
@@ -948,7 +943,6 @@ textarea.rv-text { outline: none; overflow: hidden; }
     if (C.email) L.push("EMAIL;TYPE=WORK:" + C.email);
     if (C.website) L.push("URL:" + C.website);
     if (C.address) L.push("ADR;TYPE=WORK:;;" + vEsc(C.address) + ";;;;");
-    if (C.instagram) L.push("X-SOCIALPROFILE;TYPE=instagram:" + C.instagram);
     if (C.tagline) L.push("NOTE:" + vEsc(C.tagline));
     L.push("END:VCARD"); return L.join("\r\n") + "\r\n";
   }
